@@ -1,105 +1,106 @@
-/* Cookies */
-// document.cookie = `name=Ryan; secure; samesite=strict`;
+// LIFO
+const stack = [];
+stack.push(1);
+stack.push(2);
+console.log(stack.pop());
 
-// path=/mydirectory For use in a particular file.
-// secure Only works with HTTPS instead of HTTP.
-// samesite=strict Prevent Cross-Site Scripting
-// max-age=0 Number of secs we want the cookie to last.
-// expires=${new Date().toUTCString()} Set Experation of Date.
+// FIFO
+const queue = [];
+queue.push(1);
+queue.push(2);
+console.log(queue.shift());
 
-// console.log(document.cookie);
+/* maps and dictionaries */
+const map = new Map(); // you can pass a map structure you can use an array here.
+map.set('test', 123);
+map.set('test2', 456);
+console.log(map.get('test'));
+console.log(map.size);
+console.log(map.has('test')); // checks keys
+// map.delete('test');
+// console.log(map.has('test'));
+// map.clear();
+// console.log(map.has('test2'));
 
-// accessing a cookie's value
-// const course = document
-//     .cookie
-//     .split('; ')
-//     .find(cookie => cookie.startsWith('course='))
-//     .split('=')[1];
+for ([key, value] of map) {
+    console.log(key, value);
+}
 
-// console.log(course);
-
-/* Web Storage API */
-
-/* Local Storage, does not expire */
-// localStorage.setItem('user', 'Ryan');
-// localStorage.setItem('course', 'FrontEndExpert');
-
-// console.log(localStorage.getItem('user'));
-// localStorage.removeItem('user');
-// localStorage.clear(); // removes everything from local storage
-// console.log(localStorage.getItem('course'));
-// console.log(localStorage.getItem('user'));
-
-/* Session Storage, expires at the end of session */
-
-/* indexedDb */
-const request = indexedDB.open('myDatabase', 1);
-
-/* Building the Database */
-// request.addEventListener('upgradeneeded', event => {
-//     const database = event.target.result;
-//     console.log(database)
-//     const store = database.createObjectStore('users', {keyPath: 'id'});
-//     store.createIndex('name', 'name');
-
-//     store.add({
-//         id: 0,
-//         name: 'Ryan',
-//         course: 'FrontEndExpert'
-//     });
-
-//     store.add({
-//         id: 1,
-//         name: 'Julia',
-//         course: 'AlgoExpert'
-//     });
-// })
-
-/* Connecting to existing database */
-// request.addEventListener('success', event => {
-//     const database = event.target.result;
-//     database
-//         .transaction(['users'], 'readwrite')
-//         .objectStore('users')
-//         .add({
-//             id: 2,
-//             name: 'Victor',
-//             course: 'MLExpert',
-//         });
-// })
-
-/* Deleting from the DB */
-request.addEventListener('success', event => {
-    const database = event.target.result;
-    database
-        .transaction(['users'], 'readwrite')
-        .objectStore('users')
-        .delete(2);
+map.forEach((value, key) => {
+    console.log(key, value);
 })
 
-/* Get one record from database */
-request.addEventListener('success', event => {
-    const database = event.target.result;
-    const req = database
-        .transaction(['users'], 'readwrite')
-        .objectStore('users')
-        .get(0);
-    
-    req.addEventListener('success', event => {
-        console.log(event.target.result.name);
-    })
-})
+const iter = map.entries();
+console.log(iter.next().value);
 
-/* GET from index of records */
-request.addEventListener('success', event => {
-    const database = event.target.result;
-    const req = database
-        .transaction(['users'], 'readwrite')
-        .objectStore('users')
-        .index('name')
-        .get('Ryan');
-    
-    req.addEventListener('success', event => {
-        console.log(event.target.result.course);
-    })
-})
+// if you need a key that is not a string, use maps. 
+// if the insertion order matters, use a map.
+
+// if you just have somehting simple, use an object.
+// if your using it as a req/res w/ api should use obj.
+// if you need inheiritence.
+
+/* sets */
+// a map with a unique keys.
+
+const set = new Set();
+set.add(123);
+set.add(456);
+
+console.log(set.has(123));
+// can use a for/of forEach or iter methods to iterate. 
+
+// can use to remove duplicates from arrays. 
+const arr = [1, 2, 3, 4, 4, 5, 6, 6, 6];
+console.log(Array.from(new Set(arr)));
+
+// weak set doesnt prevent garbage collections.
+const weakSet = new WeakSet();
+
+(function() {
+    const obj = {};
+    weakSet.add(obj);
+})();
+
+/* Linked Lists */
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addStart(value) {
+        const node = new Node(value);
+        node.next = this.head;
+        this.head = node;
+    }
+
+    addEnd(value) {
+        const node = new Node(value);
+        let curr = this.head;
+        if (curr === null) {
+            this.head = node;
+            return;
+        }
+
+        while (curr !== null && curr.next !== null){
+            curr = curr.next;
+        }
+
+        curr.next = node;
+    }
+}
+
+const list = new LinkedList();
+list.addStart(1);
+list.addStart(2);
+list.addEnd(3);
+console.log(list.head.value);
+console.log(list.head.next.value);
+console.log(list.head.next.next.value);
